@@ -67,15 +67,16 @@ bignum operator^ (bignum a1, bignum a2)
 		bool_a2[4 * i + 3] = ostacha % 2;
 		ostacha = ostacha / 2;
 	}
-	/*for (int i = a2.length * 4 - 1; i >= 0; i--)
+	for (int i = a2.length * 4 - 1; i >= 0; i--)
 	{
 		cout << bool_a2[i];
-	}*/
+	}
 	for (int i = 0; i < a2.length*4; i++)
 	{
 		if (bool_a2[a2.length * 4 - i] == 1) { a3 = a3 * a1; }
 		a3 = kvadrat(a3);
 	}
+	if (bool_a2[0] == 1) {a3 = a3 * a1;}
 	return (a3);
 }
 

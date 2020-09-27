@@ -36,7 +36,7 @@ int main()
 	num1 = cnum16(num16, num1);
 	num2 = cnum16(num16_2, num2);
 	/*bignum num3 = num1 - num2;*/
-	num3 = num1/num2;
+	num3 = num1 - num2;
 	cout16(num3);
 	_getch();
 }
@@ -267,18 +267,19 @@ bignum operator- (bignum a1, bignum a2) //отнимание
 	}
 	if (a1.length == a2.length)
 	{
-		int i = a1.length-1;
-		while (a1.num[i]==a2.num[i]) //нахожу старший бит в котором есть отличия
+		int i = a1.length - 1;
+		while (a1.num[i] == a2.num[i]) //нахожу старший бит в котором есть отличия
 		{
 			i--;
 		}
-		if (a1.num[i] > a2.num[i])
+		if (i < 0) { i++; }
+		if (a1.num[i] >= a2.num[i])
 		{
 			for (int i = 0; i < a2.length; i++) { a1.num[i] = a1.num[i] - a2.num[i]; }
 			for (int i = 0; i < a1.length; i++) { if (a1.num[i] < 0) { a1.num[i] = a1.num[i] + 16; a1.num[i + 1]--; } }
 			a3 = a1;
 		}
-		else  //типо делаю вид что вычетание работает просто поменяв местами цифры
+		if (a1.num[i]<a2.num[i])  //типо делаю вид что вычетание работает просто поменяв местами цифры
 		{
 			for (int i = 0; i < a1.length; i++) { a2.num[i] = a2.num[i] - a1.num[i]; }
 			for (int i = 0; i < a2.length; i++) { if (a2.num[i] < 0) { a2.num[i] = a2.num[i] + 16; a2.num[i + 1]--; } }

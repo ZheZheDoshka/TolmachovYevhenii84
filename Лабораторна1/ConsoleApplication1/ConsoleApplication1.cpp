@@ -9,7 +9,7 @@ using namespace std;
 struct bignum
 {
 	int* num;
-	int length = 0;
+	int length = 1;
 };
 
 bignum cnum16 (string num16, bignum n16);
@@ -19,6 +19,9 @@ bignum operator* (bignum a1, int a);
 bignum operator* (bignum a1, bignum a2);
 bignum operator^ (bignum a1, bignum a2);
 bignum kvadrat (bignum a1);
+bignum operator/ (bignum a1, bignum a2);
+bignum zero_one(short a);
+bignum uborka(bignum a1);
 int bigger(bignum a1, bignum a2);
 void cout16(bignum a);
 using namespace std;
@@ -33,7 +36,7 @@ int main()
 	num1 = cnum16(num16, num1);
 	num2 = cnum16(num16_2, num2);
 	/*bignum num3 = num1 - num2;*/
-	num3 = num1^num2;
+	num3 = num1/num2;
 	cout16(num3);
 	_getch();
 }
@@ -42,19 +45,10 @@ bignum kvadrat(bignum a1)
 	a1 = a1 * a1;
 	return a1;
 }
-
-bignum operator^ (bignum a1, bignum a2)
+int * boolform(bignum a2) //что-бы вернуть массив
 {
-	int* bool_a2 = new int[a2.length *4];  //строка в булевом представлении
+	int* bool_a2 = new int[a2.length * 4];  //строка в булевом представлении
 	int ostacha;
-	bignum a3;
-	a3.length = a1.length;
-	a3.num = new int[a3.length];
-	a3.num[0] = 1;
-	for (int i = 1; i<a3.length; i++)
-	{
-		a3.num[i] = 0;
-	}
 	for (int i = 0; i < a2.length; i++)
 	{
 		ostacha = a2.num[i];  //почти использовал pow
@@ -67,10 +61,94 @@ bignum operator^ (bignum a1, bignum a2)
 		bool_a2[4 * i + 3] = ostacha % 2;
 		ostacha = ostacha / 2;
 	}
-	for (int i = a2.length * 4 - 1; i >= 0; i--)
+	return (bool_a2);
+}
+bignum uborka(bignum a1) //убирает лишнии нули перед числом
+{
+	int k = a1.length;
+	bignum a3;
+	while (a1.num[k - 1] == 0)
 	{
-		cout << bool_a2[i];
+		k = k - 1;
 	}
+	if (k == 0) { k = 1; }
+	a3.length = k;
+	a3.num = new int[a3.length];
+	for (int i = 0; i < a3.length; i++)
+	{
+		a3.num[i] = a1.num[i];
+	}
+	delete[] a1.num;
+	return a3;
+}
+bignum operator/ (bignum a1, bignum a2)
+{
+	int t;
+	int k = a2.length;
+	bignum r, temp;
+	r.length = a1.length;
+	r.num = new int[r.length];
+	for (int i =0; i<r.length; i++)
+	{
+		r.num[i] = a1.num[i];
+	}
+	bignum q = zero_one(0);
+	bignum two = zero_one(2);
+	bignum to = zero_one(1);
+	while (bigger(r, a2) >= 0)
+	{
+		t = r.length;
+		temp.length = a2.length+(t-k);
+		temp.num = new int[temp.length];
+		for (int j = 0; j < temp.length; j++)
+		{
+			temp.num[j] = 0;
+		}
+		for (int j = 0; j < temp.length-t+k; j++)
+		{
+			temp.num[j+t-k] = a2.num[j];
+		}
+		if (bigger(r, temp) == -1) 
+		{
+			delete[] temp.num;
+			t = t - 1;
+			temp.length = a2.length + (t - k);
+			temp.num = new int[temp.length];
+			for (int j = 0; j < temp.length; j++)
+			{
+				temp.num[j] = 0;
+			}
+			for (int j = 0; j < temp.length - t + k; j++)
+			{
+				temp.num[j + t - k] = a2.num[j];
+			}
+		}
+		r = r - temp;
+		q = q + (two ^ (to * (t - k) * 4));
+	}
+	cout16(q);
+	cout << endl;
+	return (r);
+}
+bignum zero_one(short a)
+{
+	bignum a3;
+	a3.num = new int[a3.length];
+	a3.num[0] = a;
+	return a3;
+}
+
+bignum operator^ (bignum a1, bignum a2)
+{
+	bignum a3;
+	a3.length = a1.length;
+	a3.num = new int[a3.length];
+	a3.num[0] = 1;
+	for (int i = 1; i<a3.length; i++)
+	{
+		a3.num[i] = 0;
+	}
+	int* bool_a2 = boolform(a2);
 	for (int i = 0; i < a2.length*4; i++)
 	{
 		if (bool_a2[a2.length * 4 - i] == 1) { a3 = a3 * a1; }
@@ -115,7 +193,14 @@ bignum operator* (bignum a1, bignum a2) //умножаю
 			temp.num[j+i] = a1.num[j];
 		}
 		a3 = a3 + (temp * a2.num[i]); //вот тут эти самые 15*2 и 150*1 и их сумма и происходят
+		delete[] temp.num;
 	}
+	/*int k = a3.length;
+	while (a3.num[k - 1] == 0) //в процессе оптимизация затраченной памяти
+	{
+		
+	}*/
+	a3 = uborka(a3);
 	return a3;
 }
 bignum operator+ (bignum a1, bignum a2)  //суммирую
@@ -138,6 +223,7 @@ bignum operator+ (bignum a1, bignum a2)  //суммирую
 		for (int i = 0; i < a1.length; i++) { a3.num[i] = a3.num[i] + a1.num[i]; }
 	}
 	for (int i = 0; i < a3.length; i++) { if (a3.num[i] >= 16) { a3.num[i] = a3.num[i] - 16; a3.num[i + 1]++; } }
+	a3 = uborka(a3);
 	return a3;
 }
 int bigger(bignum a1, bignum a2) //сравниваю
@@ -200,16 +286,17 @@ bignum operator- (bignum a1, bignum a2) //отнимание
 			cout << "-";
 		}
 	}
+	a3 = uborka(a3);
 	return a3;
 }
 
 void cout16(bignum a) //вывод
 {
 	int k = a.length-1;
-	while (a.num[k]==0)
+	/*while (a.num[k]==0)  больше не нужно, спасибо уборке, но оставлю тут на память
 	{
 		k--;
-	}
+	}*/
 	for (int i = k; i >= 0; i--)
 	{
 		switch (a.num[i])

@@ -23,27 +23,169 @@ bignum operator/ (bignum a1, bignum a2);
 bignum zero_one(short a);
 bignum uborka(bignum a1);
 int bigger(bignum a1, bignum a2);
+int* boolform(bignum a2);
 void cout16(bignum a);
+void oldi(bignum a1);
 using namespace std;
+
 
 int main()
 {
 	string num16, num16_2;
-	int l=0;	
-	cin >> num16;
-	cin >> num16_2;
 	bignum num1, num2, num3;
-	num1 = cnum16(num16, num1);
-	num2 = cnum16(num16_2, num2);
-	/*bignum num3 = num1 - num2;*/
-	num3 = num1 - num2;
-	cout16(num3);
+	int l=0;
+	char a;
+	cout << "Welcome to our first laboratorna robota!"<<endl;
+	cout << "================================================" << endl;
+	bool quit = 0;
+	while (quit == 0)
+	{
+		cout << "Select your operation" << endl;
+		cout << "================================================" << endl;
+		cout << "[+] - addition" << endl;
+		cout << "[-] - subtraction" << endl;
+		cout << "[*] - multiplication" << endl;
+		cout << "[/] - division" << endl;
+		cout << "[^] - exponentiation" << endl;
+		cout << "[0] - 16 to 2" << endl;
+		cout << "[s] - starsha stepen (starsha ediniza)" << endl;
+		cout << "[q] - quit" << endl;
+		cout << "================================================" << endl;
+		cin >> a;
+		cout << "================================================" << endl;
+		switch (a)
+		{
+		case '+': 
+		{cout << "Great choice! Enter 2 numbers" << endl; 
+		cin >> num16;
+		cin >> num16_2;
+		num1 = cnum16(num16, num1);
+		num2 = cnum16(num16_2, num2);
+		num3 = num1 + num2;
+		cout << "result = "; cout16(num3); cout << endl;
+		break;
+		}
+		case '-':
+		{
+			cout << "Great choice! Enter 2 numbers" << endl;
+		cin >> num16;
+		cin >> num16_2;
+		num1 = cnum16(num16, num1);
+		num2 = cnum16(num16_2, num2);
+		num3 = num1 - num2;
+		cout << "result = "; cout16(num3); cout << endl;
+		break;
+		}
+		case '*':
+		{cout << "Great choice! Enter 2 numbers" << endl;
+		cin >> num16;
+		cin >> num16_2;
+		num1 = cnum16(num16, num1);
+		num2 = cnum16(num16_2, num2);
+		num3 = num1 * num2;
+		cout << "result = "; cout16(num3); cout << endl;
+		break; }
+		case '/':
+		{
+		cout << "Great choice! Enter 2 numbers" << endl;
+		cin >> num16;
+		cin >> num16_2;
+		num1 = cnum16(num16, num1);
+		num2 = cnum16(num16_2, num2);
+		num3 = num1 / num2;
+		cout << "result = "; cout16(num3); cout <<endl;
+		break; 
+		}
+		case '^':
+		{
+			cout << "Great choice! Enter 2 numbers" << endl;
+			cin >> num16;
+			cin >> num16_2;
+			num1 = cnum16(num16, num1);
+			num2 = cnum16(num16_2, num2);
+			num3 = num1 ^ num2;
+			cout << "result = "; cout16(num3); cout << endl;
+			break;
+		}
+		case '0':
+		{
+			cout << "Great choice! Enter 1 number" << endl;
+			cin >> num16;
+			num3 = cnum16(num16, num3);
+			int* b = boolform(num3);
+			for (int i = 0; i < 4 * num16.length(); i++)
+			{
+				cout << b[i];
+			}
+			cout << endl;
+			break;
+		}
+		case 's':
+		{
+			cout << "Great choice! Enter 1 number" << endl;
+			cin >> num16;
+			num3 = cnum16(num16, num3);
+			oldi(num3);
+			cout << endl;
+			break;
+		}
+		case 'q':
+		{
+			cout << "bye c:" << endl;
+			quit = 1;
+			break;
+		}
+		default: {cout<<"please, stop trying to break this lab. It is already on kostilyah."; break; }
+
+		}
+		if (quit == 0)
+		{
+			cout << "================================================" << endl;
+			cout << "Hotite result in booleva forma?" << endl;
+			cout << "================================================" << endl;
+			cout << "[+] - Yes." << endl;
+			cout << "[-] - No." << endl;
+			cout << "================================================" << endl;
+			cin >> a;
+			cout << "================================================" << endl;
+			switch (a)
+			{
+			case '+':
+			{
+				cout << "Great choice!" << endl;
+				int* b = boolform(num3);
+				for (int i = 0; i < 4 * num3.length; i++)
+				{
+					cout << b[i];
+				}
+				cout << endl;
+				break;
+			}
+			case '-':
+			{
+				cout << "Okhey." << endl;
+				break;
+			}
+			default: {cout << "please, stop trying to break this lab. It is already on kostilyah."; break; }
+			}
+		}
+	}
 	_getch();
 }
 bignum kvadrat(bignum a1)
 {
 	a1 = a1 * a1;
 	return a1;
+}
+void oldi(bignum a1)  //старшая степень
+{
+	int* b = boolform(a1);
+	int k=(a1.length)*4-1;
+	while (b[k]==0)
+	{
+		k--;
+	}
+	cout << "starsha stepin:= " << k+1 << endl;
 }
 int * boolform(bignum a2) //что-бы вернуть массив
 {
@@ -108,7 +250,7 @@ bignum operator/ (bignum a1, bignum a2)
 		{
 			temp.num[j+t-k] = a2.num[j];
 		}
-		if (bigger(r, temp) == -1) 
+		if ((bigger(r, temp) == -1)&&(t-k>=0))
 		{
 			delete[] temp.num;
 			t = t - 1;
@@ -123,12 +265,15 @@ bignum operator/ (bignum a1, bignum a2)
 				temp.num[j + t - k] = a2.num[j];
 			}
 		}
+					//это на всякий случай, ибо иногда у меня остача на 1 раз больше отнимается
 		r = r - temp;
 		q = q + (two ^ (to * (t - k) * 4));
+		
 	}
-	cout16(q);
+	cout << "ostacha: = ";
+	cout16(r);
 	cout << endl;
-	return (r);
+	return (q);
 }
 bignum zero_one(short a)
 {
@@ -241,8 +386,8 @@ int bigger(bignum a1, bignum a2) //сравниваю
 				}
 			if (a1.num[i] == a2.num[i]) { b = 0; }
 			else {
-				if (a1.num[i] > a2.num[i]) { b = 1; }
-				if (a2.num[i] > a1.num[i]) { b = -1; }
+				if (a1.num[i] > a2.num[i]) { b = 1;}
+				if (a2.num[i] > a1.num[i]) { b = -1;}
 			}
 			}
 	}
@@ -272,14 +417,14 @@ bignum operator- (bignum a1, bignum a2) //отнимание
 		{
 			i--;
 		}
-		if (i < 0) { i++; }
+		if (i < 0) { i=0; }
 		if (a1.num[i] >= a2.num[i])
 		{
 			for (int i = 0; i < a2.length; i++) { a1.num[i] = a1.num[i] - a2.num[i]; }
 			for (int i = 0; i < a1.length; i++) { if (a1.num[i] < 0) { a1.num[i] = a1.num[i] + 16; a1.num[i + 1]--; } }
 			a3 = a1;
 		}
-		if (a1.num[i]<a2.num[i])  //типо делаю вид что вычетание работает просто поменяв местами цифры
+		else  //типо делаю вид что вычетание работает просто поменяв местами цифры
 		{
 			for (int i = 0; i < a1.length; i++) { a2.num[i] = a2.num[i] - a1.num[i]; }
 			for (int i = 0; i < a2.length; i++) { if (a2.num[i] < 0) { a2.num[i] = a2.num[i] + 16; a2.num[i + 1]--; } }
@@ -318,7 +463,7 @@ void cout16(bignum a) //вывод
 		case 13: {cout << "D"; break; }
 		case 14: {cout << "E"; break; }
 		case 15: {cout << "F"; break; }		
-		default: {cout << "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"; break; }
+		default: {cout << a.num[i]; break; }
 		}
 	}
 }

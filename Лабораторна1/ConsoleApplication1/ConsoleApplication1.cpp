@@ -3,7 +3,8 @@
 
 #include <iostream>
 #include <string.h>
-#include <algorithm> //я не хочу по ифу элсу или тернарной операции на каждое сравнение двух чисел писать
+#include <time.h>
+#include <algorithm> //на всякий случай пусть будет. ни на что вроде не влияет
 #include <conio.h> //я люблю гетч. Потом заменю на системпауз
 using namespace std;
 struct bignum
@@ -33,6 +34,8 @@ int main()
 {
 	string num16, num16_2;
 	bignum num1, num2, num3;
+	clock_t start, finish;
+	double d;
 	int l=0;
 	char a;
 	cout << "Welcome to our first laboratorna robota!"<<endl;
@@ -61,8 +64,12 @@ int main()
 		cin >> num16_2;
 		num1 = cnum16(num16, num1);
 		num2 = cnum16(num16_2, num2);
+		start = clock();
 		num3 = num1 + num2;
+		finish = clock();
 		cout << "result = "; cout16(num3); cout << endl;
+		d = ((double)(finish)-(double)(start)) / CLOCKS_PER_SEC;
+		cout << endl << "time=" << d * 1000000000 << " nanoseconds" << endl;
 		break;
 		}
 		case '-':
@@ -72,8 +79,12 @@ int main()
 		cin >> num16_2;
 		num1 = cnum16(num16, num1);
 		num2 = cnum16(num16_2, num2);
+		start = clock();
 		num3 = num1 - num2;
+		finish = clock();
 		cout << "result = "; cout16(num3); cout << endl;
+		d = ((double)(finish)-(double)(start)) / CLOCKS_PER_SEC;
+		cout << endl << "time=" << d * 1000000000 << " nanoseconds" << endl;
 		break;
 		}
 		case '*':
@@ -82,8 +93,12 @@ int main()
 		cin >> num16_2;
 		num1 = cnum16(num16, num1);
 		num2 = cnum16(num16_2, num2);
+		start = clock();
 		num3 = num1 * num2;
+		finish = clock();
 		cout << "result = "; cout16(num3); cout << endl;
+		d = ((double)(finish)-(double)(start)) / CLOCKS_PER_SEC;
+		cout << endl << "time=" << d * 1000000000 << " nanoseconds" << endl;
 		break; }
 		case '/':
 		{
@@ -92,8 +107,12 @@ int main()
 		cin >> num16_2;
 		num1 = cnum16(num16, num1);
 		num2 = cnum16(num16_2, num2);
+		start = clock();
 		num3 = num1 / num2;
-		cout << "result = "; cout16(num3); cout <<endl;
+		finish = clock();
+		cout << "result = "; cout16(num3); cout << endl;
+		d = ((double)(finish)-(double)(start)) / CLOCKS_PER_SEC;
+		cout << endl << "time=" << d*1000000000 <<" nanoseconds" << endl;
 		break; 
 		}
 		case '^':
@@ -103,8 +122,12 @@ int main()
 			cin >> num16_2;
 			num1 = cnum16(num16, num1);
 			num2 = cnum16(num16_2, num2);
+			start = clock();
 			num3 = num1 ^ num2;
+			finish = clock();
 			cout << "result = "; cout16(num3); cout << endl;
+			d = ((double)(finish)-(double)(start)) / CLOCKS_PER_SEC;
+			cout << endl << "time=" << d * 1000000000 << " nanoseconds" << endl;
 			break;
 		}
 		case '0':

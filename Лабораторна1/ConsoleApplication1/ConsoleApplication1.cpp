@@ -52,6 +52,7 @@ int main()
 		cout << "[^] - exponentiation" << endl;
 		cout << "[0] - 16 to 2" << endl;
 		cout << "[s] - starsha stepen (starsha ediniza)" << endl;
+		cout << "[c] - check" << endl;
 		cout << "[q] - quit" << endl;
 		cout << "================================================" << endl;
 		cin >> a;
@@ -68,8 +69,8 @@ int main()
 		num3 = num1 + num2;
 		finish = clock();
 		cout << "result = "; cout16(num3); cout << endl;
-		d = ((double)(finish)-(double)(start)) / CLOCKS_PER_SEC;
-		cout << endl << "time=" << d * 1000000000 << " nanoseconds" << endl;
+		d = ((double)(finish)-(double)(start)) * 1000000000 / CLOCKS_PER_SEC;
+		cout << endl << "time=" << d << " nanoseconds" << endl;
 		break;
 		}
 		case '-':
@@ -83,8 +84,8 @@ int main()
 		num3 = num1 - num2;
 		finish = clock();
 		cout << "result = "; cout16(num3); cout << endl;
-		d = ((double)(finish)-(double)(start)) / CLOCKS_PER_SEC;
-		cout << endl << "time=" << d * 1000000000 << " nanoseconds" << endl;
+		d = ((double)(finish)-(double)(start)) * 1000000000 / CLOCKS_PER_SEC;
+		cout << endl << "time=" << d << " nanoseconds" << endl;
 		break;
 		}
 		case '*':
@@ -97,8 +98,8 @@ int main()
 		num3 = num1 * num2;
 		finish = clock();
 		cout << "result = "; cout16(num3); cout << endl;
-		d = ((double)(finish)-(double)(start)) / CLOCKS_PER_SEC;
-		cout << endl << "time=" << d * 1000000000 << " nanoseconds" << endl;
+		d = ((double)(finish)-(double)(start)) * 1000000000 / CLOCKS_PER_SEC;
+		cout << endl << "time=" << d << " nanoseconds" << endl;
 		break; }
 		case '/':
 		{
@@ -111,8 +112,8 @@ int main()
 		num3 = num1 / num2;
 		finish = clock();
 		cout << "result = "; cout16(num3); cout << endl;
-		d = ((double)(finish)-(double)(start)) / CLOCKS_PER_SEC;
-		cout << endl << "time=" << d*1000000000 <<" nanoseconds" << endl;
+		d = ((double)(finish)-(double)(start)) * 1000000000 / CLOCKS_PER_SEC;
+		cout << endl << "time=" << d << " nanoseconds" << endl;
 		break; 
 		}
 		case '^':
@@ -126,8 +127,8 @@ int main()
 			num3 = num1 ^ num2;
 			finish = clock();
 			cout << "result = "; cout16(num3); cout << endl;
-			d = ((double)(finish)-(double)(start)) / CLOCKS_PER_SEC;
-			cout << endl << "time=" << d * 1000000000 << " nanoseconds" << endl;
+			d = ((double)(finish)-(double)(start))*1000000000 / CLOCKS_PER_SEC;
+			cout << endl << "time=" << d << " nanoseconds" << endl;
 			break;
 		}
 		case '0':
@@ -152,13 +153,39 @@ int main()
 			cout << endl;
 			break;
 		}
+		case 'c':
+		{
+		cout << "Great choice! Enter 3 numbers and 1 int number" << endl;
+		cin >> num16;
+		cin >> num16_2;
+		string num_c;
+		cin >> num_c;
+		int n;
+		cin >> n;
+		num1 = cnum16(num16, num1);
+		num2 = cnum16(num16_2, num2);
+		bignum num4 = cnum16(num_c, num2);
+		num3 = (num1 + num2) * num4;
+		cout << "result of (a+b)c = "; cout16(num3); cout << endl;
+		num3 = (num1 * num4) + (num2 * num4);
+		cout << "result of a*c + b*c = "; cout16(num3); cout << endl;
+		num3 = num1 * n;
+		cout << "result of a*n = "; cout16(num3); cout << endl;
+		num3 = num1;
+		for (int i = 0; i<n-1; i++)
+		{
+			num3 = num3 + num1;
+		}
+		cout << "result of a+a+... = "; cout16(num3); cout << endl;
+		break;
+		}
 		case 'q':
 		{
 			cout << "bye c:" << endl;
 			quit = 1;
 			break;
 		}
-		default: {cout<<"please, stop trying to break this lab. It is already on kostilyah."; break; }
+		default: {cout<<"please, stop trying to break this lab. It is already on kostilyah."<<endl; break; }
 
 		}
 		if (quit == 0)
@@ -189,7 +216,7 @@ int main()
 				cout << "Okhey." << endl;
 				break;
 			}
-			default: {cout << "please, stop trying to break this lab. It is already on kostilyah."; break; }
+			default: {cout << "please, stop trying to break this lab. It is already on kostilyah."<<endl; break; }
 			}
 		}
 	}

@@ -33,11 +33,14 @@ bignum msum(bignum a2, bignum a3, bignum a1);
 bignum msub(bignum a2, bignum a3, bignum a1);
 bignum mmul(bignum a2, bignum a3, bignum a1, bignum m);
 bignum mpow(bignum a1, bignum a2, bignum n, bignum m);
+bignum mmulcopy(bignum a2, bignum a3, bignum a1, bignum m);
 int bigger(bignum a1, bignum a2);
 int* boolform(bignum a2);
 void cout16(bignum a);
 void oldi(bignum a1);
 using namespace std;
+bignum LCM(bignum a1, bignum a2);
+bignum div2(bignum a1, bignum a2); //доп задание
 
 
 int main()
@@ -66,6 +69,7 @@ int main()
 		cout << "[s] - starsha stepen (starsha ediniza)" << endl;
 		cout << "[c] - check" << endl;
 		cout << "[G] - GCD" << endl;
+		cout << "[L] - LCM" << endl;
 		cout << "[m] - x mod n" << endl;
 		cout << "[o] - (a+b) mod n" << endl;
 		cout << "[_] - (a-b) mod n" << endl;
@@ -77,6 +81,17 @@ int main()
 		cout << "================================================" << endl;
 		switch (a)
 		{
+		case 'L':
+			{
+				cout << "Great choice! Enter 2 numbers" << endl;
+				cin >> num16;
+				cin >> num16_2;
+				num1 = cnum16(num16, num1);
+				num2 = cnum16(num16_2, num2);
+				num3 = LCM(num1, num2);
+				cout << "LCM = "; cout16(num3); cout << endl;
+				break;
+			}
 		case 'p':
 		{
 			cout << "Great choice! Enter n and two numbers" << endl;
@@ -270,6 +285,39 @@ int main()
 		cout << "result of a+a+... = "; cout16(num3); cout << endl;
 		break;
 		}
+		case 'C':
+		{
+			cout << "Great choice! Enter 3 numbers and 1 int number and module" << endl;
+			cin >> num16;
+			cin >> num16_2;
+			string num_c, proste;
+			cin >> num_c;
+			cin >> proste;
+			int n;
+			cin >> n;
+			num1 = cnum16(num16, num1);
+			num2 = cnum16(num16_2, num2);
+			bignum num4 = cnum16(num_c, num2);
+			bignum s = cnum16(proste, s);
+			bignum m = mu(s);
+			num3 = (num1 + num2) * num4;
+			num3 = modn(num3, s, m);
+			cout << "result of (a+b)c mod N = "; cout16(num3); cout << endl;
+			num3 = (num1 * num4) + (num2 * num4);
+			num3 = modn(num3, s, m);
+			cout << "result of a*c + b*c mod N = "; cout16(num3); cout << endl;
+			num3 = num1 * n;
+			num3 = modn(num3, s, m);
+			cout << "result of a*n mod N = "; cout16(num3); cout << endl;
+			num3 = num1;
+			for (int i = 0; i < n - 1; i++)
+			{
+				num3 = num3 + num1;
+			}
+			num3 = modn(num3, s, m);
+			cout << "result of a+a+... mod N = "; cout16(num3); cout << endl;
+			break;
+		}
 		case 'G':
 		{
 			cout << "Great choice! Enter 2 numbers" << endl;
@@ -454,7 +502,7 @@ bignum operator^ (bignum a1, bignum a2)
 	if (bool_a2[0] == 1) {a3 = a3 * a1;}
 	return (a3);
 }
-
+	
 bignum operator* (bignum a1, int a)  //умножаю на инт
 {
 	bignum a3;
@@ -990,6 +1038,15 @@ bignum mmul(bignum a2, bignum a3, bignum a1, bignum m)
 	return a4;
 }
 
+bignum mmulcopy(bignum a2, bignum a3, bignum a1, bignum m) //обычное умножение возможно память ломает
+{
+	bignum a4, a2_1, a3_1;
+	a2_1 = modn(a2, a1, m);
+	a3_1 = modn(a3, a1, m);
+	a4 = modn(a2_1 * a3_1, a1, m);
+	return a4;
+}
+
 bignum mpow(bignum a1, bignum a2, bignum n, bignum m)
 {
 	bignum a3;
@@ -1004,10 +1061,68 @@ bignum mpow(bignum a1, bignum a2, bignum n, bignum m)
 	for (int i = 0; i < a2.length * 4; i++)
 	{
 		if (bool_a2[a2.length * 4 - i] == 1) { a3 = a3 * a1; a3 = modn(a3, n, m); }
-		a3 = mmul(a3, a3, n, m);
+		a3 = a3 * a3; a3 = modn(a3, n, m);
 	}
-	if (bool_a2[0] == 1) { a3 = mmul(a3, a1, n, m); }
+	if (bool_a2[0] == 1) { a3 = mmulcopy(a3, a1, n, m); }
 	return (a3);
+}
+
+bignum LCM(bignum a1, bignum a2)
+{
+	bignum a4 = GCD(a1,a2);
+	bignum a3 = a1 * a2;
+	a3 = silentdiv(a3, a4);
+	return a3;
+}
+
+bignum div2(bignum a1, bignum a2)
+{
+	int t, int koef;
+	int k = a2.length;
+	bignum r, temp, temp2;
+	r.length = a1.length;
+	r.num = new int[r.length];
+	for (int i = 0; i < r.length; i++)
+	{
+		r.num[i] = a1.num[i];
+	}
+	bignum q = zero_one(0);
+	bignum two = zero_one(2);
+	bignum to = zero_one(1);
+	while (bigger(r, a2) >= 0)
+	{
+		t = r.length;
+		temp.length = a2.length + (t - k);
+		temp.num = new int[temp.length];
+		for (int j = 0; j < temp.length; j++)
+		{
+			temp.num[j] = 0;
+		}
+		for (int j = 0; j < temp.length - t + k; j++)
+		{
+			temp.num[j + t - k] = a2.num[j];
+		}
+		if ((bigger(r, temp) == -1) && (t - k >= 0))
+		{
+			t = t - 1;
+			temp2.length = a2.length + (t - k);
+			temp2.num = new int[temp.length];
+			for (int j = 0; j < temp.length; j++)
+			{
+				temp2.num[j] = 0;
+			}
+			for (int j = 0; j < temp.length - t + k; j++)
+			{
+				temp2.num[j + t - k] = a2.num[j];
+			}
+			while (bigger(r, temp) == -1) {temp = temp - temp2;}
+		}
+		//это на всякий случай, ибо иногда у меня остача на 1 раз больше отнимается
+		r = r - temp;
+		q = q + (two ^ (to * (t - k) * 4));
+		delete[] temp.num;
+	}
+	return (q);
 }
 // Запуск программы: CTRL+F5 или меню "Отладка" > "Запуск без отладки"
 // Отладка программы: F5 или меню "Отладка" > "Запустить отладку"

@@ -21,8 +21,18 @@ bignum operator* (bignum a1, bignum a2);
 bignum operator^ (bignum a1, bignum a2);
 bignum kvadrat (bignum a1);
 bignum operator/ (bignum a1, bignum a2);
+bignum GCD (bignum a1, bignum a2);
 bignum zero_one(short a);
 bignum uborka(bignum a1);
+bignum div2(bignum a1);
+bignum absminus(bignum a1, bignum a2);
+bignum silentdiv(bignum a1, bignum a2);
+bignum mu(bignum a1);
+bignum modn(bignum a2, bignum a1, bignum mu);
+bignum msum(bignum a2, bignum a3, bignum a1);
+bignum msub(bignum a2, bignum a3, bignum a1);
+bignum mmul(bignum a2, bignum a3, bignum a1, bignum m);
+bignum mpow(bignum a1, bignum a2, bignum n, bignum m);
 int bigger(bignum a1, bignum a2);
 int* boolform(bignum a2);
 void cout16(bignum a);
@@ -33,8 +43,10 @@ using namespace std;
 int main()
 {
 	string num16, num16_2;
-	bignum num1, num2, num3;
+	string n;
+	bignum num1, num2, num3, pr;
 	clock_t start, finish;
+	bignum m;
 	double d;
 	int l=0;
 	char a;
@@ -53,12 +65,91 @@ int main()
 		cout << "[0] - 16 to 2" << endl;
 		cout << "[s] - starsha stepen (starsha ediniza)" << endl;
 		cout << "[c] - check" << endl;
+		cout << "[G] - GCD" << endl;
+		cout << "[m] - x mod n" << endl;
+		cout << "[o] - (a+b) mod n" << endl;
+		cout << "[_] - (a-b) mod n" << endl;
+		cout << "[x] - (a*b) mod n" << endl;
+		cout << "[p] - (a^b) mod n" << endl;//wip
 		cout << "[q] - quit" << endl;
 		cout << "================================================" << endl;
 		cin >> a;
 		cout << "================================================" << endl;
 		switch (a)
 		{
+		case 'p':
+		{
+			cout << "Great choice! Enter n and two numbers" << endl;
+			cin >> n;
+			cin >> num16;
+			cin >> num16_2;
+			num1 = cnum16(num16, num1);
+			num2 = cnum16(num16_2, num2);
+			pr = cnum16(n, pr);
+			m = mu(pr);
+			num3 = mpow(num1, num2, pr, m);
+			cout << "result = "; cout16(num3); cout << endl;
+			break;
+		}
+		case 'x':
+		{
+			cout << "Great choice! Enter n and two numbers" << endl;
+			cin >> n;
+			cin >> num16;
+			cin >> num16_2;
+			num1 = cnum16(num16, num1);
+			num2 = cnum16(num16_2, num2);
+			pr = cnum16(n, pr);
+			m = mu(pr);
+			num3 = mmul(num1, num2, pr, m);
+			cout << "result = "; cout16(num3); cout << endl;
+			break;
+		}
+		case 'o':
+		{
+			cout << "Great choice! Enter n and two numbers" << endl;
+		cin >> n;
+		cin >> num16;
+		cin >> num16_2;
+		num1 = cnum16(num16, num1);
+		num2 = cnum16(num16_2, num2);
+		pr = cnum16(n, pr);
+		num3 = msum(num1, num2, pr);
+		cout << "result = "; cout16(num3); cout << endl;
+		break;
+		}
+		case '_': //доделать
+		{
+		cout << "Great choice! Enter n and two numbers" << endl;
+		cin >> n;
+		cin >> num16;
+		cin >> num16_2;
+		num1 = cnum16(num16, num1);
+		num2 = cnum16(num16_2, num2);
+		pr = cnum16(n, pr);
+		num3 = msub(num1, num2, pr);
+		cout << "result = "; cout16(num3); cout << endl;
+		break;
+		}
+		case 'm':
+		{cout << "Great choice! Enter n and x" << endl;
+		cin >> num16;
+		cin >> num16_2;
+		num1 = cnum16(num16, num1);
+		num2 = cnum16(num16_2, num2);
+		m = mu(num1);
+		num3 = modn(num2, num1, m);
+		cout << "result = "; cout16(num3); cout << endl;
+		break;
+		}
+		case 'd':
+		{
+			cin >> num16;
+			num1 = cnum16(num16, num1);
+			num3 = div2(num1);
+			cout << "result = "; cout16(num3); cout << endl;
+			break;
+		}
 		case '+': 
 		{cout << "Great choice! Enter 2 numbers" << endl; 
 		cin >> num16;
@@ -178,6 +269,17 @@ int main()
 		}
 		cout << "result of a+a+... = "; cout16(num3); cout << endl;
 		break;
+		}
+		case 'G':
+		{
+			cout << "Great choice! Enter 2 numbers" << endl;
+			cin >> num16;
+			cin >> num16_2;
+			num1 = cnum16(num16, num1);
+			num2 = cnum16(num16_2, num2);
+			num3 = GCD(num1, num2); 
+			cout << "GCD = "; cout16(num3); cout << endl;
+			break;
 		}
 		case 'q':
 		{
@@ -569,6 +671,344 @@ bignum cnum16(string a, bignum n16)
 	}
 	return n16;
 };
+
+bignum GCD(bignum a1, bignum a2)
+{
+	bignum d = zero_one(1);
+	bignum z = zero_one(0);
+	bignum t1=zero_one(0);
+	bignum a3=zero_one(0); bignum a4= zero_one(0);
+	while ((a1.num[0] % 2 == 0) && (a2.num[0] % 2 == 0))
+	{
+		a1 = div2(a1);
+		a2 = div2(a2);
+		d = d * 2;
+	}
+	while (a1.num[0] % 2 == 0)
+	{
+		a1 = div2(a1);
+	}
+	
+	while ((a2.length >= 1) && (a2.num[0] > 0))
+	{
+		while (a2.num[0] % 2 == 0)
+		{
+			a2 = div2(a2);
+		}
+		if (bigger(a1, a2) >= 0)
+		{
+			delete[] t1.num;
+			t1.length = a2.length;
+			t1.num = new int[t1.length];
+			for (int j = 0; j < t1.length; j++)
+			{
+				t1.num[j] = a2.num[j];
+			}
+		}
+		else
+		{
+			delete[] t1.num;
+			t1.length = a1.length;
+			t1.num = new int[t1.length];
+			for (int j = 0; j < t1.length; j++)
+			{
+				t1.num[j] = a1.num[j];
+			}
+		} //а3 и а4
+		{
+			delete[] a3.num;
+			a3.length = a1.length;
+			a3.num = new int[a3.length];
+			for (int j = 0; j < a3.length; j++)
+			{
+				a3.num[j] = a1.num[j];
+			}
+			delete[] a4.num;
+			a4.length = a2.length;
+			a4.num = new int[a4.length];
+			for (int j = 0; j < a3.length; j++)
+			{
+				a4.num[j] = a2.num[j];
+			}
+		} //а3 и а4
+		a2 = absminus(a3, a4);
+		delete[] a1.num;
+		a1.length = t1.length;
+		a1.num = new int[a1.length];
+		for (int j = 0; j < t1.length; j++)
+		{
+			a1.num[j] = t1.num[j];
+		}
+	}
+	d = t1*d;
+	return d;
+}
+;
+bignum absminus (bignum a1, bignum a2) //отнимание но без вывода -
+{
+	bignum a3;
+	if (a1.length > a2.length)
+	{
+		for (int i = 0; i < a2.length; i++) { a1.num[i] = a1.num[i] - a2.num[i]; }
+		for (int i = 0; i < a1.length; i++) { if (a1.num[i] < 0) { a1.num[i] = a1.num[i] + 16; a1.num[i + 1]--; } }
+		a3.length = a1.length;
+		a3.num = new int[a3.length];
+		for (int j = 0; j < a1.length; j++)
+		{
+			a3.num[j] = a1.num[j];
+		}
+	}
+	if (a1.length < a2.length)
+	{
+		for (int i = 0; i < a1.length; i++) { a2.num[i] = a2.num[i] - a1.num[i]; }
+		for (int i = 0; i < a2.length; i++) { if (a2.num[i] < 0) { a2.num[i] = a2.num[i] + 16; a2.num[i + 1]--; } }
+		a3.length = a2.length;
+		a3.num = new int[a3.length];
+		for (int j = 0; j < a2.length; j++)
+		{
+			a3.num[j] = a2.num[j];
+		}
+	}
+	if (a1.length == a2.length)
+	{
+		int i = a1.length - 1;
+		while (a1.num[i] == a2.num[i]) //нахожу старший бит в котором есть отличия
+		{
+			i--;
+		}
+		if (i < 0) { i = 0; }
+		if (a1.num[i] >= a2.num[i])
+		{
+			for (int i = 0; i < a2.length; i++) { a1.num[i] = a1.num[i] - a2.num[i]; }
+			for (int i = 0; i < a1.length; i++) { if (a1.num[i] < 0) { a1.num[i] = a1.num[i] + 16; a1.num[i + 1]--; } }
+			a3.length = a1.length;
+			a3.num = new int[a3.length];
+			for (int j = 0; j < a1.length; j++)
+			{
+				a3.num[j] = a1.num[j];
+			}
+		}
+		else
+		{
+			for (int i = 0; i < a1.length; i++) { a2.num[i] = a2.num[i] - a1.num[i]; }
+			for (int i = 0; i < a2.length; i++) { if (a2.num[i] < 0) { a2.num[i] = a2.num[i] + 16; a2.num[i + 1]--; } }
+			a3.length = a2.length;
+			a3.num = new int[a3.length];
+			for (int j = 0; j < a2.length; j++)
+			{
+				a3.num[j] = a2.num[j];
+			}
+		}
+	}
+	a3 = uborka(a3);
+	return a3;
+}
+bignum div2 (bignum a1)
+{
+	int t;
+	bignum two = zero_one(2);
+	int k = two.length;
+	bignum r, temp;
+	r.length = a1.length;
+	r.num = new int[r.length];
+	for (int i = 0; i < r.length; i++)
+	{
+		r.num[i] = a1.num[i];
+	}
+	bignum q = zero_one(0);
+	bignum to = zero_one(1);
+	while (bigger(r, two) >= 0)
+	{
+		t = r.length;
+		temp.length = two.length + (t - k);
+		temp.num = new int[temp.length];
+		for (int j = 0; j < temp.length; j++)
+		{
+			temp.num[j] = 0;
+		}
+		for (int j = 0; j < temp.length - t + k; j++)
+		{
+			temp.num[j + t - k] = two.num[j];
+		}
+		if ((bigger(r, temp) == -1) && (t - k >= 0))
+		{
+			delete[] temp.num;
+			t = t - 1;
+			temp.length = two.length + (t - k);
+			temp.num = new int[temp.length];
+			for (int j = 0; j < temp.length; j++)
+			{
+				temp.num[j] = 0;
+			}
+			for (int j = 0; j < temp.length - t + k; j++)
+			{
+				temp.num[j + t - k] = two.num[j];
+			}
+		}
+
+		if (temp.num[temp.length-1] < r.num[temp.length-1]) { temp.num[temp.length-1] = temp.num[temp.length-1] * int(r.num[temp.length-1] / temp.num[temp.length-1]); } //что бы вместо трех 2000000000000 отнять один 60000000000000
+		r = r - temp;
+		q = q + (two ^ (to * (t - k) * 4))* (temp.num[temp.length - 1]/2);
+
+	}
+	return (q);
+} //деление на 2.
+bignum silentdiv (bignum a1, bignum a2)
+{
+	int t;
+	int k = a2.length;
+	bignum r, temp;
+	r.length = a1.length;
+	r.num = new int[r.length];
+	for (int i = 0; i < r.length; i++)
+	{
+		r.num[i] = a1.num[i];
+	}
+	bignum q = zero_one(0);
+	bignum two = zero_one(2);
+	bignum to = zero_one(1);
+	while (bigger(r, a2) >= 0)
+	{
+		t = r.length;
+		temp.length = a2.length + (t - k);
+		temp.num = new int[temp.length];
+		for (int j = 0; j < temp.length; j++)
+		{
+			temp.num[j] = 0;
+		}
+		for (int j = 0; j < temp.length - t + k; j++)
+		{
+			temp.num[j + t - k] = a2.num[j];
+		}
+		if ((bigger(r, temp) == -1) && (t - k >= 0))
+		{
+			delete[] temp.num;
+			t = t - 1;
+			temp.length = a2.length + (t - k);
+			temp.num = new int[temp.length];
+			for (int j = 0; j < temp.length; j++)
+			{
+				temp.num[j] = 0;
+			}
+			for (int j = 0; j < temp.length - t + k; j++)
+			{
+				temp.num[j + t - k] = a2.num[j];
+			}
+		}
+		//это на всякий случай, ибо иногда у меня остача на 1 раз больше отнимается
+		r = r - temp;
+		q = q + (two ^ (to * (t - k) * 4));
+
+	}
+	return (q);
+}
+bignum mu(bignum a1)
+{
+	bignum mu;
+	bignum b;
+	b.length = a1.length*2+1;
+	b.num = new int[b.length];
+	for (int i = 0; i<b.length; i++)
+	{
+		b.num[i] = 0;
+	}
+
+	b.num[b.length - 1] = 1;
+	mu = silentdiv(b,a1);
+	return mu;
+}
+bignum modn(bignum a2, bignum a1, bignum mu)
+{
+	bignum q, q1;
+	bignum x, r;
+	if (a2.length < 2 * a1.length) {
+		x.length = a1.length * 2;
+		x.num = new int[x.length];
+		for (int i = a1.length; i < x.length; i++)
+		{
+			x.num[i] = 0;
+		}
+		for (int i = 0; i < a2.length; i++)
+		{
+			x.num[i] = a2.num[i];
+		}
+	}
+	else {
+		x = a2;
+	}
+	q.length = x.length - a1.length + 1;
+	q.num = new int[q.length];
+	for (int i = 0; i < q.length; i++)
+	{
+		q.num[i] = x.num[i+a1.length-1];
+	}
+	q = q * mu;
+
+	q1.length = q.length - a1.length - 1;
+	q1.num = new int[q1.length];
+	for (int i = 0; i < q1.length; i++)
+	{
+		q1.num[i] = q.num[i + a1.length + 1];
+	}
+	r = x - q1 * a1;
+	while (bigger(r, a1) >= 0)
+	{
+	//	cout16(mu);
+	//	cout16(r);
+	//	cout16(a1);
+	//	cout << endl;
+		r = r - a1;
+	}
+	return(r);
+}
+bignum msum(bignum a2, bignum a3, bignum a1)
+{
+	bignum a4 = a3 + a2;
+	bignum m;
+	m = mu(a1);
+	a4 = modn(a4, a1, m);
+	return a4;
+}
+
+bignum msub(bignum a2, bignum a3, bignum a1)
+{
+	bignum a4;
+	bignum m;
+	m = mu(a1);
+	if (bigger(a2, a3) >= 0) { a4 = a2 - a3; a4 = modn(a4, a1, m);}
+	else { while (bigger(a2, a3) < 0) { a2 = a2 + a1; } a4 = a2 - a3; }
+	
+	return a4;
+}
+
+bignum mmul(bignum a2, bignum a3, bignum a1, bignum m)
+{
+	bignum a4;
+	a2 = modn(a2, a1, m);
+	a3 = modn(a3, a1, m);
+	a4 = modn(a2 * a3, a1, m);
+	return a4;
+}
+
+bignum mpow(bignum a1, bignum a2, bignum n, bignum m)
+{
+	bignum a3;
+	a3.length = a1.length;
+	a3.num = new int[a3.length];
+	a3.num[0] = 1;
+	for (int i = 1; i < a3.length; i++)
+	{
+		a3.num[i] = 0;
+	}
+	int* bool_a2 = boolform(a2);
+	for (int i = 0; i < a2.length * 4; i++)
+	{
+		if (bool_a2[a2.length * 4 - i] == 1) { a3 = a3 * a1; a3 = modn(a3, n, m); }
+		a3 = mmul(a3, a3, n, m);
+	}
+	if (bool_a2[0] == 1) { a3 = mmul(a3, a1, n, m); }
+	return (a3);
+}
 // Запуск программы: CTRL+F5 или меню "Отладка" > "Запуск без отладки"
 // Отладка программы: F5 или меню "Отладка" > "Запустить отладку"
 

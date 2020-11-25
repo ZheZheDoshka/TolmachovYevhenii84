@@ -34,14 +34,74 @@ bignum msub(bignum a2, bignum a3, bignum a1);
 bignum mmul(bignum a2, bignum a3, bignum a1, bignum m);
 bignum mpow(bignum a1, bignum a2, bignum n, bignum m);
 bignum mmulcopy(bignum a2, bignum a3, bignum a1, bignum m);
+bignum diver2(bignum a1, bignum a2);
 int bigger(bignum a1, bignum a2);
 int* boolform(bignum a2);
 void cout16(bignum a);
 void oldi(bignum a1);
+bignum divr(bignum a1, bignum a2);
 using namespace std;
 bignum LCM(bignum a1, bignum a2);
-bignum div2(bignum a1, bignum a2); //доп задание
+bignum sqr(bignum a1); //сверху
 
+
+struct field
+{
+	bool m[1024];
+	field()
+	{
+		for (int i = 0; i < 1024; i++)
+		{
+			m[i] = 0;
+		}
+	}
+};
+field operator+(field a1, field a2)
+{
+	field a3;
+	for (int i = 0; i < 1024; i++)
+	{
+		a3.m[i] = a1.m[i] ^ a2.m[i]; //xor
+	}
+	return a3;
+};
+field zero()
+{
+	field a1;
+	return a1;
+};
+field multiplication(field a1, field a2)
+{
+	/*field a3;
+	delete[] a3.m;
+	*(a3.m) = new bool[887];
+	for (int i = 0; i < 887; i++)
+	{
+		a1.m[i] = 0;
+	}
+
+	*(a3.m) = new bool[887];*/
+	bool a[2048];
+	field a3;
+	for (int i = 0; i < 2048; i++)
+	{
+		a[i] = 0;
+	}
+	for (int i = 0; i < 1024; i++)
+	{
+		if (a1.m[i] == 1) {
+			for (int j = 0; j < 1024; j++)
+			{
+				a[j + i] = a[j + i] ^ a2.m[j];
+			}
+		}
+	}
+	for (int i = 0; i < 444; i++)
+	{
+		a3.m[i] = a[i];
+	}
+	return a3;
+}
 
 int main()
 {
@@ -88,8 +148,12 @@ int main()
 				cin >> num16_2;
 				num1 = cnum16(num16, num1);
 				num2 = cnum16(num16_2, num2);
+				start = clock();
 				num3 = LCM(num1, num2);
 				cout << "LCM = "; cout16(num3); cout << endl;
+				finish = clock();
+				d = ((double)(finish)-(double)(start)) * 1000000000 / CLOCKS_PER_SEC;
+				cout << endl << "time=" << d << " nanoseconds" << endl;
 				break;
 			}
 		case 'p':
@@ -101,9 +165,13 @@ int main()
 			num1 = cnum16(num16, num1);
 			num2 = cnum16(num16_2, num2);
 			pr = cnum16(n, pr);
+			start = clock();
 			m = mu(pr);
 			num3 = mpow(num1, num2, pr, m);
+			finish = clock();
 			cout << "result = "; cout16(num3); cout << endl;
+			d = ((double)(finish)-(double)(start)) * 1000000000 / CLOCKS_PER_SEC;
+			cout << endl << "time=" << d << " nanoseconds" << endl;
 			break;
 		}
 		case 'x':
@@ -116,9 +184,14 @@ int main()
 			num2 = cnum16(num16_2, num2);
 			pr = cnum16(n, pr);
 			m = mu(pr);
+			start = clock();
 			num3 = mmul(num1, num2, pr, m);
 			cout << "result = "; cout16(num3); cout << endl;
+			finish = clock();
+			d = ((double)(finish)-(double)(start)) * 1000000000 / CLOCKS_PER_SEC;
+			cout << endl << "time=" << d << " nanoseconds" << endl;
 			break;
+
 		}
 		case 'o':
 		{
@@ -129,8 +202,12 @@ int main()
 		num1 = cnum16(num16, num1);
 		num2 = cnum16(num16_2, num2);
 		pr = cnum16(n, pr);
+		start = clock();
 		num3 = msum(num1, num2, pr);
 		cout << "result = "; cout16(num3); cout << endl;
+		finish = clock();
+		d = ((double)(finish)-(double)(start)) * 1000000000 / CLOCKS_PER_SEC;
+		cout << endl << "time=" << d << " nanoseconds" << endl;
 		break;
 		}
 		case '_': //доделать
@@ -215,7 +292,7 @@ int main()
 		num1 = cnum16(num16, num1);
 		num2 = cnum16(num16_2, num2);
 		start = clock();
-		num3 = num1 / num2;
+		num3 = num1/num2;
 		finish = clock();
 		cout << "result = "; cout16(num3); cout << endl;
 		d = ((double)(finish)-(double)(start)) * 1000000000 / CLOCKS_PER_SEC;
@@ -242,6 +319,8 @@ int main()
 			cout << "Great choice! Enter 1 number" << endl;
 			cin >> num16;
 			num3 = cnum16(num16, num3);
+			num1 = sqr(num3);
+			cout << "sqr = "; cout16(num1); cout << endl;
 			int* b = boolform(num3);
 			for (int i = 0; i < 4 * num16.length(); i++)
 			{
@@ -298,7 +377,8 @@ int main()
 			num1 = cnum16(num16, num1);
 			num2 = cnum16(num16_2, num2);
 			bignum num4 = cnum16(num_c, num2);
-			bignum s = cnum16(proste, s);
+			bignum s;
+			s = cnum16(proste, s);
 			bignum m = mu(s);
 			num3 = (num1 + num2) * num4;
 			num3 = modn(num3, s, m);
@@ -306,10 +386,10 @@ int main()
 			num3 = (num1 * num4) + (num2 * num4);
 			num3 = modn(num3, s, m);
 			cout << "result of a*c + b*c mod N = "; cout16(num3); cout << endl;
-			num3 = num1 * n;
-			num3 = modn(num3, s, m);
-			cout << "result of a*n mod N = "; cout16(num3); cout << endl;
-			num3 = num1;
+			bignum a4 = num1 * n;
+			a4 = modn(a4, s, m);
+			cout << "result of a*n mod N = "; cout16(a4); cout << endl;
+			num3 = zero_one(0);
 			for (int i = 0; i < n - 1; i++)
 			{
 				num3 = num3 + num1;
@@ -325,8 +405,12 @@ int main()
 			cin >> num16_2;
 			num1 = cnum16(num16, num1);
 			num2 = cnum16(num16_2, num2);
+			start = clock();
 			num3 = GCD(num1, num2); 
+			finish = clock();
 			cout << "GCD = "; cout16(num3); cout << endl;
+			d = ((double)(finish)-(double)(start)) * 1000000000 / CLOCKS_PER_SEC;
+			cout << endl << "time=" << d << " nanoseconds" << endl;
 			break;
 		}
 		case 'q':
@@ -726,7 +810,96 @@ bignum GCD(bignum a1, bignum a2)
 	bignum z = zero_one(0);
 	bignum t1=zero_one(0);
 	bignum a3=zero_one(0); bignum a4= zero_one(0);
-	while ((a1.num[0] % 2 == 0) && (a2.num[0] % 2 == 0))
+	bignum r= zero_one(1);
+	bignum r1 = zero_one(1);
+	if (bigger(a2, a1) >= 0)
+	{
+		delete[] r1.num;
+		r1.length = a1.length;
+		r1.num = new int[a1.length];
+		for (int i = 0; i < r.length; i++)
+		{
+			r1.num[i] = a1.num[i];
+		}
+	}
+	else {
+		delete[] r1.num;
+		r1.length = a2.length;
+		r1.num = new int[a2.length];
+		for (int i = 0; i < r.length; i++)
+		{
+			r1.num[i] = a2.num[i];
+		}
+	}
+	while (true)
+	{
+		if (bigger(a1, a2) >= 0)
+		{
+			r = divr(a1, a2);
+			if (bigger(r, z) == 0) { break; }
+			else {
+				delete[] a1.num;
+				a1.length = r.length;
+				a1.num = new int[a1.length];
+				for (int i = 0; i < r.length; i++)
+				{
+					a1.num[i] = r.num[i];
+				}
+				if (bigger (a2,a1)>=0)
+				{
+					delete[] r1.num;
+					r1.length = a1.length;
+					r1.num = new int[a1.length];
+					for (int i = 0; i < r.length; i++)
+					{
+						r1.num[i] = a1.num[i];
+					}
+				}
+				else {
+					delete[] r1.num;
+					r1.length = a2.length;
+					r1.num = new int[a2.length];
+					for (int i = 0; i < r.length; i++)
+					{
+						r1.num[i] = a2.num[i];
+					}
+				}
+			}
+		}
+		else
+		{
+			r = divr(a2, a1); if (bigger(r, z) == 0) { break; }
+			else {
+				delete[] a2.num;
+				a2.length = r.length;
+				a2.num = new int[a2.length];		
+				for (int i = 0; i < r.length; i++)
+				{
+					a2.num[i] = r.num[i];
+				}
+					if (bigger(a2, a1) >= 0)
+					{
+						delete[] r1.num;
+						r1.length = a1.length;
+						r1.num = new int[a1.length];
+						for (int i = 0; i < r.length; i++)
+						{
+							r1.num[i] = a1.num[i];
+						}
+					}
+					else {
+						delete[] r1.num;
+						r1.length = a2.length;
+						r1.num = new int[a2.length];
+						for (int i = 0; i < r.length; i++)
+						{
+							r1.num[i] = a2.num[i];
+						}
+					}
+			}
+		}
+	}
+	/*while ((a1.num[0] % 2 == 0) && (a2.num[0] % 2 == 0))
 	{
 		a1 = div2(a1);
 		a2 = div2(a2);
@@ -739,6 +912,16 @@ bignum GCD(bignum a1, bignum a2)
 	
 	while ((a2.length >= 1) && (a2.num[0] > 0))
 	{
+		while ((a1.num[0] % 2 == 0) && (a2.num[0] % 2 == 0))
+		{
+			a1 = div2(a1);
+			a2 = div2(a2);
+			d = d * 2;
+		}
+		while (a1.num[0] % 2 == 0)
+		{
+			a1 = div2(a1);
+		}
 		while (a2.num[0] % 2 == 0)
 		{
 			a2 = div2(a2);
@@ -766,6 +949,7 @@ bignum GCD(bignum a1, bignum a2)
 		{
 			delete[] a3.num;
 			a3.length = a1.length;
+			if (a3.length == 0) { a3.length = 1; }
 			a3.num = new int[a3.length];
 			for (int j = 0; j < a3.length; j++)
 			{
@@ -773,8 +957,9 @@ bignum GCD(bignum a1, bignum a2)
 			}
 			delete[] a4.num;
 			a4.length = a2.length;
+			if (a4.length == 0) { a4.length = 1; }
 			a4.num = new int[a4.length];
-			for (int j = 0; j < a3.length; j++)
+			for (int j = 0; j < a4.length; j++)
 			{
 				a4.num[j] = a2.num[j];
 			}
@@ -788,10 +973,10 @@ bignum GCD(bignum a1, bignum a2)
 			a1.num[j] = t1.num[j];
 		}
 	}
-	d = t1*d;
-	return d;
+	d = t1*d;*/
+	return r1;
 }
-;
+
 bignum absminus (bignum a1, bignum a2) //отнимание но без вывода -
 {
 	bignum a3;
@@ -820,7 +1005,7 @@ bignum absminus (bignum a1, bignum a2) //отнимание но без выво
 	if (a1.length == a2.length)
 	{
 		int i = a1.length - 1;
-		while (a1.num[i] == a2.num[i]) //нахожу старший бит в котором есть отличия
+		while (a1.num[i] == a2.num[i]) //нахожу старшую степень в которой есть отличия
 		{
 			i--;
 		}
@@ -892,9 +1077,8 @@ bignum div2 (bignum a1)
 			{
 				temp.num[j + t - k] = two.num[j];
 			}
+			
 		}
-
-		if (temp.num[temp.length-1] < r.num[temp.length-1]) { temp.num[temp.length-1] = temp.num[temp.length-1] * int(r.num[temp.length-1] / temp.num[temp.length-1]); } //что бы вместо трех 2000000000000 отнять один 60000000000000
 		r = r - temp;
 		q = q + (two ^ (to * (t - k) * 4))* (temp.num[temp.length - 1]/2);
 
@@ -950,6 +1134,55 @@ bignum silentdiv (bignum a1, bignum a2)
 	}
 	return (q);
 }
+bignum divr(bignum a1, bignum a2)
+{
+	int t;
+	int k = a2.length;
+	bignum r, temp;
+	r.length = a1.length;
+	r.num = new int[r.length];
+	for (int i = 0; i < r.length; i++)
+	{
+		r.num[i] = a1.num[i];
+	}
+	bignum q = zero_one(0);
+	bignum two = zero_one(2);
+	bignum to = zero_one(1);
+	while (bigger(r, a2) >= 0)
+	{
+		t = r.length;
+		temp.length = a2.length + (t - k);
+		temp.num = new int[temp.length];
+		for (int j = 0; j < temp.length; j++)
+		{
+			temp.num[j] = 0;
+		}
+		for (int j = 0; j < temp.length - t + k; j++)
+		{
+			temp.num[j + t - k] = a2.num[j];
+		}
+		if ((bigger(r, temp) == -1) && (t - k >= 0))
+		{
+			delete[] temp.num;
+			t = t - 1;
+			temp.length = a2.length + (t - k);
+			temp.num = new int[temp.length];
+			for (int j = 0; j < temp.length; j++)
+			{
+				temp.num[j] = 0;
+			}
+			for (int j = 0; j < temp.length - t + k; j++)
+			{
+				temp.num[j + t - k] = a2.num[j];
+			}
+		}
+		//это на всякий случай, ибо иногда у меня остача на 1 раз больше отнимается
+		r = r - temp;
+		q = q + (two ^ (to * (t - k) * 4));
+
+	}
+	return (r);
+}
 bignum mu(bignum a1)
 {
 	bignum mu;
@@ -969,6 +1202,7 @@ bignum modn(bignum a2, bignum a1, bignum mu)
 {
 	bignum q, q1;
 	bignum x, r;
+	if (bigger(a2, a1) == -1) { return a2; }
 	if (a2.length < 2 * a1.length) {
 		x.length = a1.length * 2;
 		x.num = new int[x.length];
@@ -1031,10 +1265,11 @@ bignum msub(bignum a2, bignum a3, bignum a1)
 
 bignum mmul(bignum a2, bignum a3, bignum a1, bignum m)
 {
-	bignum a4;
-	a2 = modn(a2, a1, m);
-	a3 = modn(a3, a1, m);
-	a4 = modn(a2 * a3, a1, m);
+	bignum a4, a2_1, a3_1;
+	a2_1 = modn(a2, a1, m);
+	a3_1 = modn(a3, a1, m);
+	a4 = a2_1 * a3_1;
+	a4 = modn(a4, a1, m);
 	return a4;
 }
 
@@ -1061,7 +1296,7 @@ bignum mpow(bignum a1, bignum a2, bignum n, bignum m)
 	for (int i = 0; i < a2.length * 4; i++)
 	{
 		if (bool_a2[a2.length * 4 - i] == 1) { a3 = a3 * a1; a3 = modn(a3, n, m); }
-		a3 = a3 * a3; a3 = modn(a3, n, m);
+		a3 = modn(a3*a3, n, m);
 	}
 	if (bool_a2[0] == 1) { a3 = mmulcopy(a3, a1, n, m); }
 	return (a3);
@@ -1069,15 +1304,80 @@ bignum mpow(bignum a1, bignum a2, bignum n, bignum m)
 
 bignum LCM(bignum a1, bignum a2)
 {
+	bignum a3;
+	bignum a5;
+	a5.length = a1.length;
+	a5.num = new int[a5.length];
+	for (int i = 0; i < a5.length; i++) { a5.num[i] = a1.num[i]; }
+	bignum a6;
+	a6.length = a2.length;
+
+	a6.num = new int[a6.length];
+	for (int i = 0; i < a6.length; i++) { a6.num[i] = a2.num[i]; }
+	a3 = a5 * a6;
 	bignum a4 = GCD(a1,a2);
-	bignum a3 = a1 * a2;
 	a3 = silentdiv(a3, a4);
 	return a3;
 }
 
-bignum div2(bignum a1, bignum a2)
+bignum sqr(bignum a1)
 {
-	int t, int koef;
+	int a;
+	int* s = boolform(a1);
+	field sb;
+	field sb2;
+	field check;
+	field c;
+	field sqrt;
+	a = 1024;
+	int q = 0;
+	if (a1.length * 4 < 1024) { a = a1.length; }
+	for (int i = 1; i < a; i = i++)
+	{
+		sb.m[i] = s[i];
+	}
+	int* sqqr = new int[1024];
+	for (int i = 1; i < 512; i = i + 2)
+	{
+		q = 1023;
+		for (int j = 0; j <= i; j++)
+		{
+			check.m[j] = 1;
+			sb2.m[j] = s[j];
+			sb2.m[i + j] = s[i + j];
+		}
+		c = multiplication(check, check);
+		while ((sb2.m[i] == c.m[i]) && (q > 0))
+		{
+			q--;
+		}
+		if (check.m[q] == 1)
+		{
+			sqrt.m[int(i / 2)] = 1;
+		}
+	}
+	bignum a2;
+	a2.length = 1024 / 4;
+	a2.num = new int[a2.length];
+	for (int i =0; i<a2.length; i++)
+	{
+		a2.num[i] = 0;
+	}
+	bignum two = zero_one(2);;
+	for (int i = 0; i < 1024 / 4; i++)
+	{
+		a2.num[i] = a2.num[i] + 1*sqrt.m[4*i];
+		a2.num[i] = a2.num[i] + 2 * sqrt.m[4 * i+1];
+		a2.num[i] = a2.num[i] + 4 * sqrt.m[4 * i+2];
+		a2.num[i] = a2.num[i] + 8 * sqrt.m[4 * i+3];
+	}
+	a2 = uborka(a2);
+	return a2;
+}
+
+bignum diver2(bignum a1, bignum a2)
+{
+	int t; int koef;
 	int k = a2.length;
 	bignum r, temp, temp2;
 	r.length = a1.length;

@@ -1,3 +1,4 @@
 ﻿  ConsoleApplication1.cpp
-N:\lab1\lab1CPOM\Лабораторна1\ConsoleApplication1\ConsoleApplication1.cpp(245): warning C4018: <: несоответствие типов со знаком и без знака
+N:\lab1\lab1CPOM\Лабораторна1\ConsoleApplication1\ConsoleApplication1.cpp(325): warning C4018: <: несоответствие типов со знаком и без знака
+N:\lab1\lab1CPOM\Лабораторна1\ConsoleApplication1\ConsoleApplication1.cpp(1380): warning C4101: koef: неиспользованная локальная переменная
   ConsoleApplication1.vcxproj -> N:\lab1\lab1CPOM\Лабораторна1\Debug\ConsoleApplication1.exe

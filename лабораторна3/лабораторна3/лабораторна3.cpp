@@ -164,8 +164,9 @@ int main()
 			cout << "Enter second number" << endl;
 			cout << "================================================" << endl;
 			num2 = enter(num2);
-			cout << "Multiplication:" << endl;
-			outbool(multiplication(num1, num2, f));
+			cout << "Multiplication:" << endl;			
+			num3 = (multiplication(num1, num2, f));
+			outbool(num3);
 			break;
 		}
 		case 's':

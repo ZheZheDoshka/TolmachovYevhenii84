@@ -58,6 +58,7 @@ int exp2(int a, int e);
 int exp(int a, int e);
 matrix mult();
 field left(field a1);
+
 int main()
 {
 	int deg = 444;
